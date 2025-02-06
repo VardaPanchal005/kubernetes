@@ -161,8 +161,6 @@ The secret will include `MONGO_INITDB_ROOT_USERNAME` and `MONGO_INITDB_ROOT_PASS
 ### 2. MongoDB ConfigMap (`mongo-config.yaml`)
 This file defines configuration settings that MongoDB needs for running, such as data directory and port number. It can store non-sensitive configuration data, which can be accessed by MongoDB containers.
 
-You might include parameters like `MONGO_DATA_DIR` for the data storage location or `MONGO_PORT` for specifying the MongoDB service port.
-
 ### 3. MongoDB Deployment (`mongo.yaml`)
 This file defines the MongoDB deployment. It specifies the following:
 - The container image (`mongo:5.0`) to use.
@@ -252,6 +250,20 @@ Once connected to MongoDB, create a new database and insert a sample document:
 
 ```bash
 use mydb
+```
+If you want to create a new user in your MongoDB instance:
+```bash
+
+db.createUser({
+  user: "username",
+  pwd: "password",
+  roles: [
+    { role: "readWrite", db: "databasename" }
+  ]
+})
+```
+To insert sample data into a collection:
+```bash
 db.mycollection.insertOne({ name: "John Doe", email: "johndoe@example.com", interests: ["coding", "music"] })
 ```
 
@@ -280,6 +292,10 @@ kubectl apply -f webapp.yaml
 Use POST and GET requests from your Node.js application to insert and retrieve data from MongoDB. Verify the changes reflect in MongoDB Express or via the MongoDB CLI.
 
 ---
+
+## Note 
+1. If you are using Windows then minikube ip will not work so you have to use port forwarding.
+2. Credentials inside mongo-secret file should be base64 encoded.
 
 ## Conclusion
 You have successfully deployed a Node.js web application connected to a MongoDB database on a Kubernetes cluster using Minikube. You can now expand upon this setup by adding additional features, monitoring, and scaling capabilities.
